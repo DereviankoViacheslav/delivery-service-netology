@@ -3,7 +3,8 @@
 
 
 ##### Запустить проект локально (должна быть запущена MongoDB на 27017)
----
+
+
 `git clone`
 
 
@@ -14,19 +15,19 @@
 
 
 `npm run start:dev`
-
+---
 ##### Запустить проект в docker-compose (запустит MongoDB в кнтейнере на 27017)
 
 `docker-compose up -d --build`
-
+---
 ### API
 
 ##### Получить все объявления
----
-`GET http://localhost:3000/api/advertisements`
 
-##### Зарегистрироваться (в Postmen)
+`GET http://localhost:3000/api/advertisements`
 ---
+##### Зарегистрироваться (в Postmen)
+
 ```javascript
 {
     "email": "myemail3@netology.ru",
@@ -36,9 +37,9 @@
 }
 ```
 `POST http://localhost:3000/api/signup`
-
-##### Войти (в Postmen)
 ---
+##### Войти (в Postmen)
+
 ```javascript
 {
     "email": "myemail@netology.ru",
@@ -46,13 +47,13 @@
 }
 ```
 `POST http://localhost:3000/api/signin`
-
+---
 ##### Получить объявление по id (в Postmen)
----
-`GET http://localhost:3000/api/advertisements/:advertisementId`
 
-##### Создать объявление (в Postmen, данные отправлять через form-data)
+`GET http://localhost:3000/api/advertisements/:advertisementId`
 ---
+##### Создать объявление (в Postmen, данные отправлять через form-data)
+
 ```javascript
 {
     "shortText": type text,
@@ -62,7 +63,7 @@
 }
 ```
 `POST http://localhost:3000/api/advertisements`
-
-##### Удалить объявление по id (в Postmen)
 ---
+##### Удалить объявление по id (в Postmen)
+
 `DELETE http://localhost:3000/api/advertisements/:advertisementId`

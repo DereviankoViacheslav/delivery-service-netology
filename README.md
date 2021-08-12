@@ -15,6 +15,7 @@
 
 
 `npm run start:dev`
+
 ---
 ##### Запустить проект в docker-compose (запустит MongoDB в кнтейнере на 27017)
 

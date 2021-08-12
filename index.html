@@ -42,24 +42,27 @@
     <div class="row">
       <div class="col-4">
         <div class="form-group">
-          <label for="username">Имя пользователя</label>
+          <label for="username">ID получателя</label>
           <input
-            placeholder="Введите имя"
+            placeholder="Введите ID"
             type="text"
             id="username"
             class="form-control"
           />
         </div>
         <div class="form-group">
-          <label for="text">Комментарий</label>
+          <label for="text">Сообщение</label>
           <textarea
-            placeholder="Комментарий..."
+            placeholder="Сообщение..."
             class="form-control"
             id="text"
           ></textarea>
         </div>
         <button type="submit" id="send-room" class="btn btn-primary">
           Отправить
+        </button>
+        <button type="submit" id="get-history" class="btn btn-primary">
+          Получить историю
         </button>
       </div>
     </div>
@@ -81,6 +84,7 @@
       const inputUsername = document.querySelector('#username');
       const inputText = document.querySelector('#text');
       const sendRoom = document.querySelector('#send-room');
+      const getHistory = document.querySelector('#get-history');
 
       const getTmp = (msg) => {
         return `
@@ -95,6 +99,14 @@
       };
 
       socket.on('newMessage', (data) => {
+        const readAt = data.readAt || 'Непрочитано';
+        const { author, text } = data;
+        const div = getTmp({ author, text, readAt });
+        boxList.insertAdjacentHTML('beforeend', div);
+      });
+
+      socket.on('chatHistory', (data) => {
+        boxList.innerHTML = '';
         data.history.forEach((msg) => {
           const readAt = msg.readAt || 'Непрочитано';
           const { author, text } = msg;
@@ -103,18 +115,22 @@
         });
       });
 
-      socket.on('message-to-room', (msg) => {
-        const div = getTmp(msg);
-        boxList.insertAdjacentHTML('beforeend', div);
-      });
-
-      if (sendRoom)
+      if (sendRoom) {
         sendRoom.addEventListener('click', () => {
           socket.emit('sendMessage', {
             receiver: inputUsername.value,
             text: inputText.value
           });
         });
+      }
+
+      if (getHistory) {
+        getHistory.addEventListener('click', () => {
+          socket.emit('getHistory', {
+            receiverId: inputUsername.value
+          });
+        });
+      }
     </script>
   </body>
 </html>

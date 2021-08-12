@@ -11,7 +11,7 @@ const AdvertisementSchema = new Schema(
     description: { type: String },
     images: [{ type: String }],
     tags: [{ type: String }],
-    isDeleted: Boolean
+    isDeleted: { type: Boolean, default: false }
   },
   { versionKey: false, timestamps: true }
 );

@@ -6,9 +6,10 @@ const {
 } = require('../../middlewares');
 const router = express.Router();
 
-router.get('/', isAuthenticatedMiddleware, async (req, res) => {
+router.get('/', async (req, res) => {
+  console.log('req.params ===>>>', req.query);
   try {
-    const advertisements = await AdvertisementModule.find();
+    const advertisements = await AdvertisementModule.find(req.query);
     return res.status(200).json({ data: advertisements, status: 'ok' });
   } catch (error) {
     console.log('GET /api/advertisements -> error ===>>>', error);
@@ -21,7 +22,7 @@ router.get('/', isAuthenticatedMiddleware, async (req, res) => {
 
 router.post(
   '/',
-  isAuthenticatedMiddleware,
+  // isAuthenticatedMiddleware,
   multerMiddleware.array('images'),
   async (req, res) => {
     const { tags, ...data } = req.body;

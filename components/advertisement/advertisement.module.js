@@ -6,8 +6,19 @@ const create = async (data) => {
 };
 
 const find = async (params) => {
-  // TODO: поиск по разным полям
-  const response = await AdvertisementModel.find(params).populate({
+  const tags = params.tags
+    ? params.tags.split(', ').map((tag) => ({ tags: { $in: [tag] } }))
+    : null;
+  const query = {
+    $and: [
+      { isDeleted: false },
+      { shortText: { $regex: params.shortText, $options: '$i' } },
+      { description: { $regex: params.description, $options: '$i' } }
+    ]
+  };
+  if (params.userId) query['$and'].push({ userId: params.userId });
+  if (tags) query['$and'].push(...tags);
+  const response = await AdvertisementModel.find(query).populate({
     path: 'userId',
     select: '_id, name'
   });

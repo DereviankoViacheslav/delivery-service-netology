@@ -3,15 +3,14 @@ const { ChatModule } = require('../chat');
 module.exports = (io) => (req, res, next) => {
   io.on('connection', (socket) => {
     const { id } = socket;
-
+    
     socket.on('getHistory', async (data) => {
       if (req.user) {
         const currentUserId = req.user._id;
-        const { id } = data;
-        const chat = await ChatModule.find([currentUserId, id]);
+        const { receiverId } = data;
+        const chat = await ChatModule.find([currentUserId, receiverId]);
         const history = await ChatModule.getHistory(chat._id);
-        socket.broadcast.emit('chatHistory', { history });
-        socket.emit('chatHistory', { history });
+        io.sockets.emit('chatHistory', { history });
       }
     });
 
@@ -19,10 +18,12 @@ module.exports = (io) => (req, res, next) => {
       if (req.user) {
         const author = req.user._id;
         const { receiver, text } = data;
-        const chat = await ChatModule.sendMessage({ author, receiver, text });
-        const history = await ChatModule.getHistory(chat._id);
-        socket.broadcast.emit('newMessage', { history });
-        socket.emit('newMessage', { history });
+        const message = await ChatModule.sendMessage({
+          author,
+          receiver,
+          text
+        });
+        io.sockets.emit('newMessage', message);
       }
     });
 

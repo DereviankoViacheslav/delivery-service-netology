@@ -1,11 +1,20 @@
 const ChatModel = require('./chat.model');
 const { MessageModule } = require('../message');
+const { UserModel } = require('../user');
 
 const sendMessage = async (data) => {
   const { author, receiver, text } = data;
-  const message = await MessageModule.create({ author, text });
+  let message = await MessageModule.create({ author, text });
+  const user = await UserModel.findById(author);
   let chat = await ChatModel.findOne({
-    users: { $in: [author, receiver] }
+    $and: [
+      {
+        users: { $in: [author] }
+      },
+      {
+        users: { $in: [receiver] }
+      }
+    ]
   });
   if (!chat) {
     chat = await ChatModel.create({
@@ -20,7 +29,8 @@ const sendMessage = async (data) => {
       { new: true }
     );
   }
-  return chat;
+  message = { ...message.toObject(), author: user.name };
+  return message;
 };
 
 const getHistory = async (id) => {

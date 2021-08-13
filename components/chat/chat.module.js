@@ -2,6 +2,8 @@ const ChatModel = require('./chat.model');
 const { MessageModule } = require('../message');
 const { UserModel } = require('../user');
 
+const subscriptions = [];
+
 const sendMessage = async (data) => {
   const { author, receiver, text } = data;
   let message = await MessageModule.create({ author, text });
@@ -30,7 +32,7 @@ const sendMessage = async (data) => {
     );
   }
   message = { ...message.toObject(), author: user.name };
-  return message;
+  subscriptions.forEach((cb) => cb(chat._id, message));
 };
 
 const getHistory = async (id) => {
@@ -51,7 +53,7 @@ const getHistory = async (id) => {
 };
 
 const subscribe = (callback) => {
-  callback();
+  subscriptions.push(callback);
 };
 
 const find = async (userIds) => {

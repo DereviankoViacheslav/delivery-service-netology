@@ -98,9 +98,9 @@
       `;
       };
 
-      socket.on('newMessage', (data) => {
-        const readAt = data.readAt || 'Непрочитано';
-        const { author, text } = data;
+      socket.on('newMessage', ({ message, chatId }) => {
+        const readAt = message.readAt || 'Непрочитано';
+        const { author, text } = message;
         const div = getTmp({ author, text, readAt });
         boxList.insertAdjacentHTML('beforeend', div);
       });
